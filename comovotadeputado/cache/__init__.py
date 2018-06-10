@@ -1,6 +1,7 @@
 import requests
 from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
+from comovotadeputado.cache.constants import CacheConstants
 
 cache_opts = {
     'cache.type': 'file',
@@ -10,11 +11,8 @@ cache_opts = {
 
 cache = CacheManager(**parse_cache_config_options(cache_opts))
 
-#one_day = 3600 * 24
-one_day = 10
-
-def fetch_data(cache_key, url): 
-    @cache.cache(cache_key, expire=one_day)
+def http_fetch_data(cache_key, url): 
+    @cache.cache(cache_key, expire=CacheConstants.EXPIRATION_TIME)
     def _fetch_data(url):
         resp = requests.get(url)
         return resp
