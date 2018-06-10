@@ -18,7 +18,8 @@ def _get_voted_propositions(year):
 def get_voted_propositions_dataframe(year):
     resp = _get_voted_propositions(year)
     resp_json = xml_to_json(resp.content)
-    propositions_df = pd.io.json.json_normalize(resp_json['proposicoes']['proposicao'])
+    propositions_df = pd.io.json.json_normalize(
+        resp_json[OpenDataConstants.PROPOSITIONS_JSON_KEY][OpenDataConstants.PROPOSITION_JSON_KEY])
     return propositions_df
 
 def _get_proposition(propostion_id):
@@ -30,10 +31,10 @@ def _get_proposition(propostion_id):
 def get_proposition(propostion_id):
     resp = _get_proposition(propostion_id)
     resp_json = xml_to_json(resp.content)
-    proposition_json = resp_json['proposicao']
-    p_type = proposition_json['@tipo'].strip()
-    p_year = proposition_json['@ano'].strip()
-    p_number = proposition_json['@numero'].strip()      
+    proposition_json = resp_json[OpenDataConstants.PROPOSITION_JSON_KEY]
+    p_type = proposition_json[OpenDataConstants.PROPOSITION_TYPE_COLNAME].strip()
+    p_year = proposition_json[OpenDataConstants.PROPOSITION_YEAR_COLNAME].strip()
+    p_number = proposition_json[OpenDataConstants.PROPOSITION_NUMBER_COLNAME].strip()
     proposition = Proposition(p_number, p_type, p_year)
     return proposition
 
@@ -50,28 +51,28 @@ def get_polls_dataframe(p_type, p_number, p_year, voted_date):
         raise Exception(ErrorMessages.UNOBTAINABLE_DATA)
         
     resp_json = xml_to_json(resp.content)
-    polls = resp_json['proposicao']['Votacoes']['Votacao']
-    if '@Resumo' in polls: # has only one vote
+    proposition_json = resp_json[OpenDataConstants.PROPOSITION_JSON_KEY]
+    polls = proposition_json[OpenDataConstants.POLLS_JSON_KEY][OpenDataConstants.POLL_JSON_KEY]
+    if OpenDataConstants.PROPOSITION_SUMMARY_COLNAME in polls: # has only one vote
         polls = [polls]
 
     polls_df = pd.DataFrame()
     for poll in polls:
 
-        date = poll['@Data']
-        hour = poll['@Hora']
+        date = poll[OpenDataConstants.PROPOSITION_DATE_COLNAME]
+        hour = poll[OpenDataConstants.PROPOSITION_HOUR_COLNAME]
                 
         #if date != voted_date: 
             #continue
             # date = 10/3/2018, voted_date = 10/03/2018
 
+        new_votes = pd.io.json.json_normalize(
+            poll[OpenDataConstants.VOTE_JSON_KEY][OpenDataConstants.CONGRESSMAN_JSON_KEY])
+        new_votes[OpenDataConstants.PROPOSITION_DATE_COLNAME] = date
+        new_votes[OpenDataConstants.PROPOSITION_HOUR_COLNAME] = hour
         if polls_df.empty:
-            polls_df = pd.io.json.json_normalize(poll['votos']['Deputado'])
-            polls_df['@Data'] = date
-            polls_df['@Hora'] = hour
+            polls_df = new_votes
         else:
-            new_votes = pd.io.json.json_normalize(poll['votos']['Deputado'])
-            new_votes['@Data'] = date
-            new_votes['@Hora'] = hour
             polls_df = polls_df.append(new_votes)
     
     return polls_df    

@@ -4,6 +4,7 @@ import comovotadeputado.opendata.controller as open_dt_ctrl
 from comovotadeputado.errors.messages import ErrorMessages
 from comovotadeputado.cache import cache
 from comovotadeputado.cache.constants import CacheConstants, CachePrefixesKeys
+from comovotadeputado.opendata.constants import OpenDataConstants
 
 class VotesCtrl:
 
@@ -42,5 +43,5 @@ class VotesCtrl:
     def get_congressman_votes(self, congressman_id, year):                
         all_votes_df = self.get_all_votes_dataframe(year)
         congressman_votes_df = all_votes_df.loc[
-            (all_votes_df['@ideCadastro'] == congressman_id)]
+            (all_votes_df[OpenDataConstants.CONGRESSMAN_ID_COLNAME] == congressman_id)]
         return congressman_votes_df
