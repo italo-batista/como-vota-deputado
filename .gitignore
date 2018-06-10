@@ -3,3 +3,5 @@
 notes.txt
 comovotadeputado.egg-info/
 dist/
+__pycache__/
+*.pyc
