@@ -3,7 +3,7 @@ from setuptools import setup
 setup(
   name = 'comovotadeputado',
   packages = ['comovotadeputado'], 
-  version = '0.1',
+  version = '0.2',
   description = 'To describe',
   author = 'Italo Batista',
   author_email = 'italohmb@gmail.com',

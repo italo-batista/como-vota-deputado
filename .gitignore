@@ -1,2 +1,5 @@
 *.ipynb
 .ipynb_checkpoints/
+notes.txt
+comovotadeputado.egg-info/
+dist/
