@@ -1,4 +1,5 @@
 
+
 class OpenDataConstants:
 
     # endpoints
@@ -8,7 +9,7 @@ class OpenDataConstants:
 
     # data colnames
     PROPOSITION_DATE_COLNAME = '@Data'
-    PROPOSITION_HOUR_COLNAME = '@Houre'
+    PROPOSITION_HOUR_COLNAME = '@Hora'
     PROPOSITION_SUMMARY_COLNAME = '@Resumo'
     PROPOSITION_TYPE_COLNAME = "@tipo"
     PROPOSITION_YEAR_COLNAME = "@ano"

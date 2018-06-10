@@ -6,6 +6,7 @@ from comovotadeputado.cache import cache
 from comovotadeputado.cache.constants import CacheConstants, CachePrefixesKeys
 from comovotadeputado.opendata.constants import OpenDataConstants
 
+
 class VotesCtrl:
 
     def get_all_votes_dataframe(self, year):
@@ -28,8 +29,11 @@ class VotesCtrl:
                     polls_df = open_dt_ctrl.get_polls_dataframe(proposition.type, proposition.number, 
                         proposition.year, voted_date)
                 except Exception as e:
-                    if e.args == ErrorMessages.UNOBTAINABLE_DATA:
-                        continue                
+                    error_msg = str(e)
+                    if error_msg == ErrorMessages.UNOBTAINABLE_DATA:
+                        continue
+                    else:
+                        raise Exception(e)               
         
                 if all_votes_df.empty:
                     all_votes_df = polls_df

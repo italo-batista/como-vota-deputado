@@ -3,6 +3,7 @@ from beaker.cache import CacheManager
 from beaker.util import parse_cache_config_options
 from comovotadeputado.cache.constants import CacheConstants
 
+
 cache_opts = {
     'cache.type': 'file',
     'cache.data_dir': '/tmp/cache/data',

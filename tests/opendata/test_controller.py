@@ -6,6 +6,7 @@ import comovotadeputado.opendata.controller as opendata_ctrl
 from comovotadeputado.opendata.constants import OpenDataConstants
 from comovotadeputado.models.proposition import Proposition
 
+
 PROPOSITION_ID = "354258"
 
 def _get_mocked_proposition_response():
@@ -30,3 +31,5 @@ class PropositionTest(TestCase):
         self.assertIsNotNone(proposition)
         self.assertIsInstance(proposition, Proposition)
         self.assertEquals(proposition.number, expected_proposition.number)
+        self.assertEquals(proposition.type, expected_proposition.type)
+        self.assertEquals(proposition.year, expected_proposition.year)

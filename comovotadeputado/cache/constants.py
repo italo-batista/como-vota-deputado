@@ -1,5 +1,6 @@
 #one_day = 3600 * 24
-one_day = 120
+one_day = 240
+
 
 class CacheConstants:
     EXPIRATION_TIME = one_day

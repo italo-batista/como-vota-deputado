@@ -1,5 +1,6 @@
 from comovotadeputado.controllers.votes import VotesCtrl
 
+
 class ComoVotaDeputado:
 
     def __init__(self):
