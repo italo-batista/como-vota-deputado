@@ -1,16 +1,15 @@
 import pandas as pd
 
 import comovotadeputado.opendata.controller as open_dt_ctrl
-from comovotadeputado.opendata.constants import OpenDataConstants
 from comovotadeputado.errors.messages import ErrorMessages
 from comovotadeputado.cache import cache
-from comovotadeputado.cache.constants import CacheConstants
+from comovotadeputado.cache.constants import CacheConstants, CachePrefixesKeys
 
 class VotesCtrl:
 
     def get_all_votes_dataframe(self, year):
         
-        cache_key = 'all_votes_dataframe' + year    
+        cache_key = CachePrefixesKeys.ALL_VOTES_PREFIXE_KEY + year
         
         @cache.cache(cache_key, expire=CacheConstants.EXPIRATION_TIME)
         def _get_all_votes_dataframe(year):
