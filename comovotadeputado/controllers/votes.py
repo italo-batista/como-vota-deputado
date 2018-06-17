@@ -44,7 +44,7 @@ class VotesCtrl:
 
         return _get_all_votes_dataframe(year)        
 
-    def get_congressman_votes(self, congressman_id, year):                
+    def get_congressman_votes_dataframe(self, congressman_id, year):
         all_votes_df = self.get_all_votes_dataframe(year)
         congressman_votes_df = all_votes_df.loc[
             (all_votes_df[OpenDataConstants.CONGRESSMAN_ID_COLNAME] == congressman_id)]
