@@ -5,3 +5,5 @@ comovotadeputado.egg-info/
 dist/
 __pycache__/
 *.pyc
+.idea/
+_trial_temp/
