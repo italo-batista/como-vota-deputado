@@ -6,6 +6,7 @@ class OpenDataConstants:
     PROPOSITION_ENDPOINT = "http://www.camara.leg.br/SitCamaraWS/Proposicoes.asmx/ObterProposicaoPorID"
     POLLS_PROPOSITIONS_ENDPOINT = "http://www.camara.leg.br/SitCamaraWS/Proposicoes.asmx/ObterVotacaoProposicao"
     VOTED_PROPOSITIONS_ENDPOINT = "http://www.camara.leg.br/SitCamaraWS/Proposicoes.asmx/ListarProposicoesVotadasEmPlenario"
+    ATTENDANCE_ENDPOINT = "http://www.camara.leg.br/SitCamaraWSV2/sessoesreunioes.asmx/ListarPresencasDia"
 
     # data colnames
     PROPOSITION_DATE_COLNAME = '@Data'
@@ -23,3 +24,10 @@ class OpenDataConstants:
     POLLS_JSON_KEY = 'Votacoes'
     VOTE_JSON_KEY = 'votos'
     CONGRESSMAN_JSON_KEY = 'Deputado'
+
+    DATE_STR = 'Date'
+    CONGRESSPERSON_MAT = "CongresspersonId"
+    CONGRESSPERSON_NAME = 'CongresspersonName'
+    POLITICAL_PARTY = "PoliticalParty"
+    FEDERATION_UNITY = 'FedUnity'
+    ATTENDANCE_DESC = 'Attendance'
