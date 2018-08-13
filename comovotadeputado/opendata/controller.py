@@ -3,6 +3,7 @@ import datetime as dt
 
 import comovotadeputado.cache as cache
 from comovotadeputado.opendata.constants import OpenDataConstants
+from comovotadeputado.opendata.attendance_values import CongressPersonAttendance
 from comovotadeputado.errors.messages import ErrorMessages
 from comovotadeputado.constants.http import HttpStatusCode
 from comovotadeputado.utils.parser import xml_to_json
@@ -112,40 +113,42 @@ def get_attendances_dataframe(date, congressperson_id, political_party_initials,
 
     resp_json = xml_to_json(resp.content)
 
-    if resp_json["dia"] == None:
+    if resp_json[OpenDataConstants.ATTENDANCE_DAY_JSON_KEY] == None:
         raise Exception(ErrorMessages.EMPTY_DATA)
 
-    date_str = resp_json["dia"]["data"].split(" ")[0]
-    congresspeople_json = resp_json["dia"]["parlamentares"]["parlamentar"]
+    attendance_day_json = resp_json[OpenDataConstants.ATTENDANCE_DAY_JSON_KEY]
+    date_str = attendance_day_json[OpenDataConstants.ATTENDANCE_DATE_JSON_KEY].split(" ")[0]
+    congresspeople_json = attendance_day_json[OpenDataConstants.ATTENDANCE_CONGRESSPEOPLE_JSON_KEY][OpenDataConstants.ATTENDANCE_CONGRESSPERSON_JSON_KEY]
 
     if congressperson_id != "":
         congresspeople_json = [congresspeople_json]
 
-    columns = [OpenDataConstants.DATE_STR, OpenDataConstants.CONGRESSPERSON_MAT, OpenDataConstants.CONGRESSPERSON_NAME,
-               OpenDataConstants.POLITICAL_PARTY, OpenDataConstants.FEDERATION_UNITY, OpenDataConstants.ATTENDANCE_DESC]
+    columns = [OpenDataConstants.ATTENDANCE_DATE_STR_COLNAME, OpenDataConstants.ATTENDANCE_CONGRESSPERSON_MAT_COLNAME,
+               OpenDataConstants.ATTENDANCE_CONGRESSPERSON_NAME_COLNAME, OpenDataConstants.ATTENDANCE_POLITICAL_PARTY_COLNAME,
+               OpenDataConstants.ATTENDANCE_FEDERATION_UNITY_COLNAME, OpenDataConstants.ATTENDANCE_DESC_COLNAME]
     attendances_df = pd.DataFrame(columns=columns)
 
     for congressperson in congresspeople_json:
-        congressperson_mat = congressperson["carteiraParlamentar"]
-        congressperson_name = congressperson["nomeParlamentar"].split("-")[0]
-        congressperson_ppi = congressperson["siglaPartido"]
-        congressperson_uf = congressperson["siglaUF"]
-        attendances_description = congressperson["descricaoFrequenciaDia"]
+        congressperson_mat = congressperson[OpenDataConstants.ATTENDANCE_CONGRESSPERSON_MAT_JSON_KEY]
+        congressperson_name = congressperson[OpenDataConstants.ATTENDANCE_CONGRESSPERSON_NAME_JSON_KEY].split("-")[0]
+        congressperson_ppi = congressperson[OpenDataConstants.ATTENDANCE_POLITICAL_PARTY_JSON_KEY]
+        congressperson_uf = congressperson[OpenDataConstants.ATTENDANCE_FED_UNITY_JSON_KEY]
+        attendances_description = congressperson[OpenDataConstants.ATTENDANCE_DAY_FREQ_JSON_KEY]
 
         if attendances_description == "Ausência":
-            congressperson_att = "Absent"
+            congressperson_att = CongressPersonAttendance.ABSENT
         elif attendances_description == "Ausência justificada":
-            congressperson_att = "Justified absence"
+            congressperson_att = CongressPersonAttendance.JUSTIFIED_ABSCENCE
         else:
-            congressperson_att = "Present"
+            congressperson_att = CongressPersonAttendance.PRESENT
 
         attendances_df = attendances_df.append({
-            OpenDataConstants.DATE_STR: date_str,
-            OpenDataConstants.CONGRESSPERSON_MAT: congressperson_mat,
-            OpenDataConstants.CONGRESSPERSON_NAME: congressperson_name,
-            OpenDataConstants.POLITICAL_PARTY: congressperson_ppi,
-            OpenDataConstants.FEDERATION_UNITY: congressperson_uf,
-            OpenDataConstants.ATTENDANCE_DESC: congressperson_att
+            OpenDataConstants.ATTENDANCE_DATE_STR_COLNAME: date_str,
+            OpenDataConstants.ATTENDANCE_CONGRESSPERSON_MAT_COLNAME: congressperson_mat,
+            OpenDataConstants.ATTENDANCE_CONGRESSPERSON_NAME_COLNAME: congressperson_name,
+            OpenDataConstants.ATTENDANCE_POLITICAL_PARTY_COLNAME: congressperson_ppi,
+            OpenDataConstants.ATTENDANCE_FEDERATION_UNITY_COLNAME: congressperson_uf,
+            OpenDataConstants.ATTENDANCE_DESC_COLNAME: congressperson_att
         }, ignore_index=True)
 
     return attendances_df
