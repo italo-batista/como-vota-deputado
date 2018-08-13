@@ -1,4 +1,5 @@
 import pandas as pd
+import datetime as dt
 
 import comovotadeputado.cache as cache
 from comovotadeputado.opendata.constants import OpenDataConstants
@@ -7,6 +8,7 @@ from comovotadeputado.constants.http import HttpStatusCode
 from comovotadeputado.utils.parser import xml_to_json
 from comovotadeputado.models.proposition import Proposition
 from comovotadeputado.cache.constants import CachePrefixesKeys
+from comovotadeputado.utils import is_empty_or_none
 
 
 def _get_voted_propositions(year):
@@ -76,3 +78,74 @@ def get_polls_dataframe(p_type, p_number, p_year, voted_date):
             polls_df = polls_df.append(new_votes)
     
     return polls_df    
+
+def _get_attendances_response(date, congressperson_id, political_party_initials, uf_initials):
+    cache_key = CachePrefixesKeys.HTTP_ATTENDANCES_JSON_PREFIXE_KEY + congressperson_id + date.ctime() \
+                + political_party_initials + uf_initials
+    query_url = OpenDataConstants.ATTENDANCE_ENDPOINT + "?data="
+
+    if isinstance(date, dt.datetime):
+        query_url += str(date.day) + "/" + str(date.month) + "/" + str(date.year)
+
+    query_url += "&numMatriculaParlamentar="
+    if not is_empty_or_none(congressperson_id):
+        query_url += congressperson_id
+
+    # TO DO: for the future
+    query_url += "&siglaPartido="
+    if not is_empty_or_none(political_party_initials):
+        query_url += political_party_initials
+
+    # TO DO: for the future
+    query_url += "&siglaUF="
+    if not is_empty_or_none(uf_initials):
+        query_url += uf_initials
+
+    resp = cache.http_fetch_data(cache_key, query_url)
+    return resp
+
+def get_attendances_dataframe(date, congressperson_id, political_party_initials, uf_initials):
+    resp = _get_attendances_response(date, congressperson_id, political_party_initials, uf_initials)
+
+    if resp.status_code != HttpStatusCode.OK:
+        raise Exception(ErrorMessages.UNOBTAINABLE_DATA)
+
+    resp_json = xml_to_json(resp.content)
+
+    if resp_json["dia"] == None:
+        raise Exception(ErrorMessages.EMPTY_DATA)
+
+    date_str = resp_json["dia"]["data"].split(" ")[0]
+    congresspeople_json = resp_json["dia"]["parlamentares"]["parlamentar"]
+
+    if congressperson_id != "":
+        congresspeople_json = [congresspeople_json]
+
+    columns = [OpenDataConstants.DATE_STR, OpenDataConstants.CONGRESSPERSON_MAT, OpenDataConstants.CONGRESSPERSON_NAME,
+               OpenDataConstants.POLITICAL_PARTY, OpenDataConstants.FEDERATION_UNITY, OpenDataConstants.ATTENDANCE_DESC]
+    attendances_df = pd.DataFrame(columns=columns)
+
+    for congressperson in congresspeople_json:
+        congressperson_mat = congressperson["carteiraParlamentar"]
+        congressperson_name = congressperson["nomeParlamentar"].split("-")[0]
+        congressperson_ppi = congressperson["siglaPartido"]
+        congressperson_uf = congressperson["siglaUF"]
+        attendances_description = congressperson["descricaoFrequenciaDia"]
+
+        if attendances_description == "Ausência":
+            congressperson_att = "Absent"
+        elif attendances_description == "Ausência justificada":
+            congressperson_att = "Justified absence"
+        else:
+            congressperson_att = "Present"
+
+        attendances_df = attendances_df.append({
+            OpenDataConstants.DATE_STR: date_str,
+            OpenDataConstants.CONGRESSPERSON_MAT: congressperson_mat,
+            OpenDataConstants.CONGRESSPERSON_NAME: congressperson_name,
+            OpenDataConstants.POLITICAL_PARTY: congressperson_ppi,
+            OpenDataConstants.FEDERATION_UNITY: congressperson_uf,
+            OpenDataConstants.ATTENDANCE_DESC: congressperson_att
+        }, ignore_index=True)
+
+    return attendances_df
