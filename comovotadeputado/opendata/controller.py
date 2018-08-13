@@ -40,7 +40,7 @@ def get_proposition(propostion_id):
     proposition = Proposition(p_number, p_type, p_year)
     return proposition
 
-def _get_polls(p_type, p_number, p_year):
+def _get_polls_response(p_type, p_number, p_year):
     cache_key = CachePrefixesKeys.HTTP_POOLS_JSON_PREFIXE_KEY + p_type + p_number + p_year
     query_url = OpenDataConstants.POLLS_PROPOSITIONS_ENDPOINT + "?tipo=" + p_type + "&numero=" + p_number + "&ano=" + p_year
     resp = cache.http_fetch_data(cache_key, query_url)
@@ -48,7 +48,7 @@ def _get_polls(p_type, p_number, p_year):
 
 def get_polls_dataframe(p_type, p_number, p_year, voted_date):
 
-    resp = _get_polls(p_type, p_number, p_year)    
+    resp = _get_polls_response(p_type, p_number, p_year)
     if resp.status_code != HttpStatusCode.OK:
         raise Exception(ErrorMessages.UNOBTAINABLE_DATA)
         
