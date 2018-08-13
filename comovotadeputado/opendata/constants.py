@@ -16,6 +16,12 @@ class OpenDataConstants:
     PROPOSITION_YEAR_COLNAME = "@ano"
     PROPOSITION_NUMBER_COLNAME = "@numero"
     CONGRESSMAN_ID_COLNAME = '@ideCadastro'
+    ATTENDANCE_DATE_STR_COLNAME = 'Date'
+    ATTENDANCE_CONGRESSPERSON_MAT_COLNAME = "CongresspersonId"
+    ATTENDANCE_CONGRESSPERSON_NAME_COLNAME = 'CongresspersonName'
+    ATTENDANCE_POLITICAL_PARTY_COLNAME = "PoliticalParty"
+    ATTENDANCE_FEDERATION_UNITY_COLNAME = 'FedUnity'
+    ATTENDANCE_DESC_COLNAME = 'Attendance'
 
     # json keys
     PROPOSITION_JSON_KEY = 'proposicao'
@@ -24,10 +30,17 @@ class OpenDataConstants:
     POLLS_JSON_KEY = 'Votacoes'
     VOTE_JSON_KEY = 'votos'
     CONGRESSMAN_JSON_KEY = 'Deputado'
+    ATTENDANCE_DAY_JSON_KEY = "dia"
+    ATTENDANCE_DATE_JSON_KEY = "data"
+    ATTENDANCE_CONGRESSPEOPLE_JSON_KEY = "parlamentares"
+    ATTENDANCE_CONGRESSPERSON_JSON_KEY = "parlamentar"
+    ATTENDANCE_CONGRESSPERSON_MAT_JSON_KEY = "carteiraParlamentar"
+    ATTENDANCE_CONGRESSPERSON_NAME_JSON_KEY = "nomeParlamentar"
+    ATTENDANCE_POLITICAL_PARTY_JSON_KEY = "siglaPartido"
+    ATTENDANCE_FED_UNITY_JSON_KEY = "siglaUF"
+    ATTENDANCE_DAY_FREQ_JSON_KEY = "descricaoFrequenciaDia"
 
-    DATE_STR = 'Date'
-    CONGRESSPERSON_MAT = "CongresspersonId"
-    CONGRESSPERSON_NAME = 'CongresspersonName'
-    POLITICAL_PARTY = "PoliticalParty"
-    FEDERATION_UNITY = 'FedUnity'
-    ATTENDANCE_DESC = 'Attendance'
+
+
+
+
