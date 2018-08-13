@@ -14,5 +14,7 @@ class ComoVotaDeputado:
         return self.votes_ctrl.get_congressman_votes_dataframe(congressman_id, year)
 
     def get_attendances(self, day, month, year, congressperson_id="", political_party_initials="", uf_initials=""):
-        return self.attendances_ctrl.get_all_attendances_date_dataframe(day, month, year, str(congressperson_id),
-                                                                        str(political_party_initials), str(uf_initials))
+        return self.attendances_ctrl \
+            .get_all_attendances_date_dataframe(
+                day=day, month=month, year=year, congressperson_id=str(congressperson_id),
+                political_party_initials=str(political_party_initials), uf_initials=str(uf_initials))

@@ -10,17 +10,14 @@ from comovotadeputado.opendata.constants import OpenDataConstants
 class VotesCtrl:
 
     def get_all_votes_dataframe(self, year):
-        
         cache_key = CachePrefixesKeys.ALL_VOTES_PREFIXE_KEY + year
-        
+
         @cache.cache(cache_key, expire=CacheConstants.EXPIRATION_TIME)
         def _get_all_votes_dataframe(year):
-
             propositions_df = open_dt_ctrl.get_voted_propositions_dataframe(year)        
             all_votes_df = pd.DataFrame()
             
             for index, row in propositions_df.iterrows():
-        
                 cod_proposition = row['codProposicao']
                 voted_date = row['dataVotacao']
                 proposition = open_dt_ctrl.get_proposition(cod_proposition)
