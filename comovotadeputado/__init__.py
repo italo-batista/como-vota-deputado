@@ -1,7 +1,8 @@
-from comovotadeputado.controllers.votes import VotesCtrl
-from comovotadeputado.controllers.attendances import AttendancesCtrl
+from .controllers.votes import VotesCtrl
+from .controllers.attendances import AttendancesCtrl
 
-class ComoVotaDeputado:
+
+class ComoVotaDeputado(object):
 
     def __init__(self):
         self.votes_ctrl = VotesCtrl()

@@ -1,9 +1,9 @@
-#from distutils.core import setup
-from setuptools import setup
+from setuptools import setup, find_packages
+
 setup(
   name = 'comovotadeputado',
-  packages = ['comovotadeputado'], 
-  version = '0.2.1',
+  packages=find_packages(),
+  version = '1.0',
   description = 'To describe',
   author = 'Italo Batista',
   author_email = 'italohmb@gmail.com',
